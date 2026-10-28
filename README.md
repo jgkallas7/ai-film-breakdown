@@ -17,7 +17,7 @@ goes up.**
 ## How it works
 
 ```mermaid
-flowchart LR
+flowchart TD
     Z[Hudl film zip<br/>~100-140 clips] --> S[make_sheets.py<br/>contact sheets,<br/>per-second strips]
     S --> R1[Reader agent<br/>clips 1-38]
     S --> R2[Reader agent<br/>clips 39-76]

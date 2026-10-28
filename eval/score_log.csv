@@ -1,0 +1,8 @@
+date,label,run,seed,brief,reads,family,exact_line,core,three_side,nose,agree,acc_when_agree
+2026-10-21,"baseline: line-count brief, end zone + wide, 2x crop",gold_run1,1,5dcf5d3e7d,48,0.75,0.458,0.583,0.729,0.75,0.417,0.7
+2026-10-21,run2: + 6 worked-example frames,gold_run2,1,134329ed24,48,0.833,0.479,0.604,0.729,0.792,0.583,0.571
+2026-10-21,run3: + #45 rule + 3 frames,gold_run3,1,7bc09b32d4,48,0.875,0.521,0.625,0.75,0.771,0.792,0.579
+2026-10-22,rescore run1 (gold: OPK 102 recheck),gold_run1,1,5dcf5d3e7d,48,0.75,0.458,0.583,0.729,0.75,0.417,0.7
+2026-10-22,rescore run2 (gold: OPK 102 recheck),gold_run2,1,134329ed24,48,0.833,0.479,0.604,0.729,0.792,0.583,0.571
+2026-10-22,rescore run3 (gold: OPK 102 recheck),gold_run3,1,7bc09b32d4,48,0.875,0.521,0.625,0.75,0.771,0.792,0.579
+2026-10-22,run4: + Y-in-BEAR overhang + tighter-tech rule,gold_run4,1,56228dff0e,48,0.854,0.479,0.604,0.708,0.792,0.542,0.692

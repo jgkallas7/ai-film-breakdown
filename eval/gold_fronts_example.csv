@@ -1,0 +1,3 @@
+game_id,team,team_desc,opp,zip,angles,clip,set_t,set_t_wide,cam_hint,form,fam,hash,dn,dist,gold_line,gold_family,gold_seq,gold_n_line,gold_three,gold_nose,gold_group,gold_box,gold_shell,source,gold_core
+opj_opk,OPJ,white jerseys (away),OPK (game 1),OPK_vs_OPJ.zip,"endzone,wide",7,3.5,5.0,behind_D,TRIPS LT,TRIPS,M,1.0,10.0,"['5 R hand #99', '0 M hand #52', '3 L hand #88', '5 L stand #45']",EVEN,5-3-0-5,4,L,0,EVEN 0 nose,6.0,2-high,COACH fronts board,E-3-0-E
+opj_opk,OPJ,white jerseys (away),OPK (game 1),OPK_vs_OPJ.zip,"endzone,wide",8,2.5,4.6,behind_D,TRIPS RT,TRIPS,L,1.0,10.0,"['5 L hand #45', '3 L hand #88', '2i R hand #52', '5 R hand #99']",EVEN,5-3-2i-5,4,L,2i,UNDER,6.0,2-high,COACH fronts board,E-3-2i-E

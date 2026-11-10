@@ -1,5 +1,7 @@
 # Frame-reader brief (one agent per clip range)
 
+**Read first: `recognition_card.md` (Coach's technique numbers + COUNT rule, from manual B9 ID-1 / ID-2). Techniques count by man out from the snapper, whoever he is; 6 = head-up on the Y, 7 = inside, 9 = outside.**
+
 You are breaking down high-school football game film, one Hudl clip at a time, so a script can build a Hudl-Assist-style import (down & distance, spot, hash, result, gain, formation, defense) for a scouting report. You do NOT write the spreadsheet. You write one JSON line per clip.
 
 ## Inputs (filled in by the launcher)
@@ -28,7 +30,7 @@ You are breaking down high-school football game film, one Hudl clip at a time, s
 - Use the CHAINS and the DOWN MARKER whenever visible. If you can read the number on the down box, `down_box` = that number. It is the best down source there is.
 - Yard lines: read the painted numbers nearest the ball, not the far-side ones (the far side slants and reads 5–10 yds off). Give `half` as which half of the SCREEN the ball is in (`left` = left half of the screen as filmed, `right`, or `mid` at the 50). `yd` = the yard line number (1–50).
 - Quarter: note the scoreboard or clock whenever one shows (in `scoreboard`). Teams switch ends each quarter, and that switch is the quarter break.
-- **Front and spacing (Coach, 10/6).** Read `library/00_standards/defensive_front_definitions.md` first; it has the full definitions and named fronts. Zoom-crop the box on the Tight angle if the zip has one, then list every player ON the line at DL depth, left to right from the OFFENSE's view, with his technique and stance. Write it in `def.techs`, e.g. `["5 hand","3 hand","1 hand","5 stand"]`. Techniques: 0 = head-up center, 1 = center/guard shade, 2i = inside shoulder of guard, 2 = head-up guard, 3 = outside shoulder of guard, 4i = inside shoulder of tackle, 4 = head-up tackle, 5 = outside shoulder of tackle, 6/7/9 = on or outside the TE/wing. The script decides from that list:
+- **Front and spacing (Coach, 10/6).** Read `library/00_standards/defensive_front_definitions.md` first; it has the full definitions and named fronts. Zoom-crop the box on the Tight angle if the zip has one, then list every player ON the line at DL depth, left to right from the OFFENSE's view, with his technique and stance. Write it in `def.techs`, e.g. `["5 hand","3 hand","1 hand","5 stand"]`. Techniques: 0 = head-up center, 1 = center/guard shade, 2i = inside shoulder of guard, 2 = head-up guard, 3 = outside shoulder of guard, 4i = inside shoulder of tackle, 4 = head-up tackle, 5 = outside shoulder of tackle, 7 / 6 / 9 = inside / head-up / outside the TE or wing (name the exact one). With no TE on that side, a wide 5 is a 9; that one is a judgment and either is accepted (Coach 11/09). The script decides from that list:
   - **The COUNT on the line decides** (Coach, 10/6): count only players ON the line at DL depth, hands down or standup ends playing as DL. **3 or 5 = ODD, even with a shaded nose; 4 = EVEN.** The nose (0 vs. shade) only describes spacing. The usual mistake is counting a walked-up OLB or overhang who is really at LB depth or split outside (OPE): leave him out of `techs`.
   - **FRONT = EVEN** for an even number on the line (a standup end at end depth playing DL counts: 3 hands + a standup end = 4 = EVEN), usually with a B-gap bubble. **FRONT = ODD** for 3 or 5, usually with a 0 nose (3-4, 5-1), but a shaded nose is still odd.
   - **SPACING:** a head-up 0 nose with the guards uncovered (4i-0-4i, "Tite/Tuff") is **odd spacing**, even when four are on the line. No one head-up on the center, with a 1/2i and a 3 (a B-gap bubble) is **even spacing**.
@@ -36,8 +38,8 @@ You are breaking down high-school football game film, one Hudl clip at a time, s
   - A standing player OFF the ball (LB depth) or split wide as an overhang is NOT on the line.
   - **Standup edge: end or OLB? Watch the snap.** Grab a frame about 0.5–1 s after the snap. If he plays off the ball like a DL (rushes, or squeezes/sets the edge from the line), he's a lineman. If he drops, reads, or flows like a backer, he's an OLB and not on the line. Decide per team after a few snaps, keep it consistent, and say which in `note`. Coach: this "needs some context/see how they play the play".
 - **Heavy sets and pressure (Coach's OPA tags, 10/10):** against two TEs/wings, count the line TE to TE and never carry the team's base front onto those snaps (readers wrote EVEN on 11 of 11; Coach had ODD/BEAR/5-3/5-4 on 8). `pressure: none` only after checking every LB at +0.4/+0.8 s; otherwise `unclear`. Details: `front_brief.md` → Calibration rules.
-- **Coverage/shell: don't guess.** The sideline angle has called "1-high" with two safeties at the same depth. Fill `shell` only when the deep players are clearly in the frame; otherwise "unclear". Coach tags coverage himself.
-- **Fronts (Coach's definitions):** a standing player on the line at end depth and posture, outside the tackle, IS a defensive end. 3 hands down plus a standing end plus 2 inside backers = 4-man front. "Stack" = 3-3: three second-level backers behind a 3-man line. An overhang walked up on the line is still an overhang (and may be a blitz), not an end. Describe DL position by nearest OL (on center, outside shoulder of guard, etc.), never by technique numbers.
+- **Coverage/shell: don't guess.** The sideline angle has called "1-high" with two safeties at the same depth. Fill `shell` only when the deep players are clearly in the frame at the set; otherwise "unclear". Fill `coverage` only on a pass play where you can see the deep players about 1.5–2 s after the snap (count who is still deep, then look at the corners: eyes on the QB or hips turned with the receiver); otherwise "unclear". Write "unclear" before you write a coverage that only repeats your shell. Coach tags coverage himself: when two readers agree, he sees the call as a suggestion to confirm, and nothing prints from your read (11/09).
+- **Fronts (Coach's definitions):** a standing player on the line at end depth and posture, outside the tackle, IS a defensive end. 3 hands down plus a standing end plus 2 inside backers = 4-man front. "Stack" = 3-3: three second-level backers behind a 3-man line. An overhang walked up on the line is still an overhang (and may be a blitz), not an end. In `def.desc`, describe DL position by nearest OL in plain words (on center, outside shoulder of guard, etc.); the technique numbers go only in `def.techs`.
 - Mark anything you are guessing as `conf:"L"`. A blank is better than a confident wrong value.
 
 ## Output fields (one JSON object per line; use null when unknown)
@@ -57,13 +59,13 @@ You are breaking down high-school football game film, one Hudl clip at a time, s
  "form": {"backfield": "gun 1 back|gun 2 back|pistol|under center 1 back|under center 2 back|empty",
           "shape": "2x2|3x1|2x1 TE|3x1 TE|bunch|empty 3x2|2-back I|wing|unbalanced|goal line",
           "te": 0, "te_side": "L|R|null", "strength": "L|R|null",   // OFFENSE's left/right, facing the defense
-          "motion": "none|jet|orbit|zip/short|across|shift", "motion_dir": "L|R|null",
+          "motion": "none|jet|orbit|in/short|across|shift", "motion_dir": "L|R|null",
           "desc": "short plain description, e.g. 'gun, RB right of QB, TE right attached, 2 WR left, 1 WR right'"},
  "play_dir_off": "L|M|R",           // run point of attack, OFFENSE's left/right
  "play_desc": "plain words: inside run right, QB keep, bubble screen left, deep shot, sprint-out...",
  "ball_carrier": "#21", "target": "#9",
  "def": {"techs": ["5 hand","3 hand","1 hand","5 stand"], "down": 3, "standing_ends": 1, "box": 6, "front_family": "4-man|3-3 stack|3-4|4-3|5+ on line|unclear",
-         "shell": "1-high|2-high|0-high|unclear", "rushers": 4, "pressure": "none|LB|DB|sim|unclear",
+         "shell": "1-high|2-high|0-high|unclear", "coverage": "Cover 0|Cover 1|Cover 2|Cover 3|Cover 4|unclear", "rushers": 4, "pressure": "none|LB|DB|sim|unclear",
          "desc": "e.g. 'nose on center, DT outside shoulder of right guard, DE outside left tackle, standing end over Y'"},
  "conf": "H|M|L",
  "note": "anything the coach should check (penalty flag, who recovered, unreadable spot...)"}
@@ -72,3 +74,5 @@ For kicks, fill kind/poss/off_dir/spot_pre/result/kick_yds/ret_yds/spot_end and 
 
 ## Notes file
 Write `{notes}` with: (a) a possession timeline for your range (clip ranges → team, and how each series ended); (b) jersey numbers that keep showing up for {us} (QB, RB, the main receivers, the DL/LB who make plays); (c) any clips you were unsure about and why. Keep it short.
+
+**Calibration 11/01 (OPA, high end zone, vs Coach's blind calls):** When torn between two techniques on a DT, zoom again and mark the line conf L; don't lean wide or tight (the 11/01 "write the tighter one" rule came out 11/09: gold run 8 showed no gain, and the wide lean was one stretch of OPA film). A goal-line 6-across front whose standing edges rush = a blitz, not just a 6-man front. Place players from the field paint (`60_scout_gameplans/2026_wk12_opq/scout/fieldxy_v261101.py`), never from a template or OL width.

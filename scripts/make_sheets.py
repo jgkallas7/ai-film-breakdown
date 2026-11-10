@@ -2,13 +2,15 @@
 
     python3 make_sheets.py "<game.zip>" <workdir> [--frames 6] [--width 1568]
 
-Writes  <workdir>/clips/Clip NNN.mp4   (extracted once; reused by grab.py)
+Writes  <workdir>/clips/Clip NNN.mp4   (the Wide angle; extracted once; reused by grab.py)
+        <workdir>/clips_tight/         (the Tight angle, when the zip has one)
+        <workdir>/<angle>/             (any other angle in the zip, e.g. endzone: "End Zone - Clip NNN.mp4")
         <workdir>/sheets/cNNN.jpg      (2-col grid, frames evenly spaced 5%..97%,
                                         each tile stamped with clip # and t=seconds)
         <workdir>/clips.json           (clip -> duration seconds)
 Work in the session scratchpad -- never unpack film into a synced folder.
 """
-import argparse, json, re, subprocess, sys, zipfile
+import argparse, json, re, shutil, subprocess, sys, zipfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import imageio_ffmpeg
@@ -56,28 +58,30 @@ def main():
     a = ap.parse_args()
     work = Path(a.work); (work / "clips").mkdir(parents=True, exist_ok=True); (work / "sheets").mkdir(exist_ok=True)
     zf = zipfile.ZipFile(a.zip)
-    jobs = []
+    jobs, angles = [], {}
     for name in zf.namelist():
-        t = re.match(r"Tight - Clip (\d+)\.mp4$", name)      # Tight angle: extract for grab.py --tight
-        if t:
-            (work / "clips_tight").mkdir(exist_ok=True)
-            tp = work / "clips_tight" / f"Clip {int(t.group(1)):03d}.mp4"
-            if not tp.exists():
-                tp.write_bytes(zf.read(name))
-            continue
-        m = re.match(r"Wide - Clip (\d+)\.mp4$", name)       # sheets are built from the Wide angle
+        m = re.match(r"(?:.*/)?(.+?) - Clip (\d+)\.mp4$", name)
         if not m:
             continue
-        clip = int(m.group(1)); mp4 = work / "clips" / f"Clip {clip:03d}.mp4"
-        if not mp4.exists():
-            mp4.write_bytes(zf.read(name))
-        jobs.append((clip, mp4, work / "sheets" / f"c{clip:03d}.jpg", a.frames, a.width))
+        ang, clip = m.group(1).lower().replace(" ", ""), int(m.group(2))
+        # Wide -> clips/ (the sheets), Tight -> clips_tight/ (grab.py --tight); any other angle Hudl exported
+        # (End Zone, a drone ...) -> <work>/<angle>/ for grab.py / snap_strip.py --angle <angle>.
+        folder = {"wide": "clips", "tight": "clips_tight"}.get(ang, ang)
+        angles[folder] = angles.get(folder, 0) + 1
+        mp4 = work / folder / f"Clip {clip:03d}.mp4"
+        if not mp4.exists() or mp4.stat().st_size != zf.getinfo(name).file_size:
+            mp4.parent.mkdir(exist_ok=True)
+            with zf.open(name) as src, open(mp4, "wb") as dst:
+                shutil.copyfileobj(src, dst, 1 << 22)
+        if folder == "clips":
+            jobs.append((clip, mp4, work / "sheets" / f"c{clip:03d}.jpg", a.frames, a.width))
+    if not jobs:
+        print(f"NO 'Wide - Clip NNN.mp4' in this zip, so no sheets were built. Angles found: {angles or 'none'}. "
+              f"Read from the strips instead: snap_strip.py <work> <clips> --angle <one of those folders>.")
     with ThreadPoolExecutor(8) as ex:
         durs = dict(ex.map(sheet, sorted(jobs)))
     (work / "clips.json").write_text(json.dumps(durs, indent=0))
-    tight = sum(1 for n in zf.namelist() if n.startswith("Tight"))
-    print(f"{len(durs)} clips -> {work/'sheets'}  (Tight-angle clips in zip: {tight})")
-
+    print(f"{len(durs)} clips -> {work/'sheets'}  (angle folders: {angles})")
 
 if __name__ == "__main__":
     sys.exit(main())

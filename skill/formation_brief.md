@@ -19,7 +19,7 @@ OPC clip 10, as Coach laid it out from the near side: WR #17 split out, space, R
 
 ## Count the line before you name a TE side (Coach, OPC 10/12)
 Readers flipped the TE side on OPC 13 and 31 and missed the TE altogether on 13. Coach: "there's only two linemen left of the center, not sure how the readers would be confused on this." At the set frame, find the snapper (ball in his hands), then count the players in stances on each side of him. 2 and 3 = the TE is on the 3 side. 2 and 2 = no TE on the line. Do this on every snap before you use DOOR, TANDEM or TRIO.
-- **A crouched player 1–2.5 yds off the ball beside the TE = the TANDEM wing (Y2), not a fullback.** On LT, Coach named it TANDEM RT PISTOL (13, 31). An earlier "#42 = FB → DOOR 2 BACK" rule was based on a wrong description and is void.
+- **A crouched player 1–2.5 yds off the ball beside the TE = the TANDEM wing (Y2), not a fullback.** On OPC, Coach named it TANDEM RT PISTOL (13, 31). An earlier "#42 = FB → DOOR 2 BACK" rule was based on a wrong description and is void.
 - **TE on the line on one side + the off-ball Y on the other = `DOOR <TE side> DICE <Y side>`** (Coach, OPC 13: DOOR LT DICE RT PISTOL). Not plain DOOR.
 - **Even after the line count, the TE side was wrong on 4 of 12 OPC snaps (Coach 10/13), one of them marked H.** From a sideline wide angle, mark the TE side conf L unless the snapper and both ends are plainly visible in the zoom crop.
 - **RB straight behind a gun QB = PISTOL** (Coach on OPC 13, 31). Write it when you can see it.
@@ -46,7 +46,7 @@ Readers flipped the TE side on OPC 13 and 31 and missed the TE altogether on 13.
 | QUADS | four receivers to one side | quads side |
 | EMPTY | no back | 3-receiver side |
 | DIAMOND | full house: QB + three backs in a diamond | none |
-| BEAST | our OWN short-yardage set. **Never write BEAST on another team** (OPA 10/10: readers wrote BEAST on all 11 OPB heavy snaps; Coach: DOUBLE TIGHT DOUBLE WING) | none |
+| RHINO | our OWN short-yardage set (6 OL; BEAST was cut 11/05, so older film of our team still shows it as BEAST). **Never write RHINO or BEAST on another team** (OPA 10/10: readers wrote BEAST on all 11 OPB heavy snaps; Coach: DOUBLE TIGHT DOUBLE WING) | none |
 | DOUBLE TIGHT DOUBLE WING | opponent heavy set: an attached TE at each end of the line plus an off-ball wing outside each TE, no split WRs. Add `UNBALANCED` when the line or the TE/wing pair is shifted to one side (OPB 42–43) | none |
 | VICTORY | kneel-down formation (Coach, OPA clip 116) | none |
 

@@ -8,7 +8,9 @@ answers; a section that answers none gets cut before Coach sees it.
 **Who answers each question**
 - **[R] Readers can count it** from pre-snap frames (end zone + wide) or Hudl Assist. Goes in the report as numbers.
 - **[R→C] Readers flag, Coach confirms.** Needs the 1-2 s after the snap. Readers pick candidate snaps; Coach makes the call
-  on a board. Never printed until Coach confirms (readers were 0 of 6 on pressure and 8 of 14 on coverage at OPJ).
+  on a board. Never printed until Coach confirms. Measured: 0 of 6 on pressure and 8 of 14 on coverage at OPJ
+  (10/18); against Coach's blind OPA chart, 4 of his 6 blitzes caught and coverage right on 23 of 34 reads, 11 of 12
+  when two readers agreed on a call (11/09, `gold/score_opa.py`). Good enough to pick the snaps, not to print.
 - **[C] Coach's eye.** Judgment: who's good, how aggressive, technique. Claude builds a short clip list per question
   (the 8-12 snaps that show it); Coach watches only those and writes the answer.
 - **[O] Off film.** Coaching staff, injuries, what other coaches say. Coach or the staff.
@@ -45,7 +47,7 @@ answers; a section that answers none gets cut before Coach sees it.
 
 ## Formation and motion adjustments
 20. [R] What happens when our formation is into the boundary?
-21. [R] How do they adjust to bunch (TRIBE), nub (TROOP), EMPTY (aligned and motioned to), and our motions (ORBIT, FLY, ZIP, PUSH)?
+21. [R] How do they adjust to bunch (TRIBE), nub (TROOP), EMPTY (aligned and motioned to), and our motions (ORBIT, FLY / JET, IN, PUSH / PULL)?
 22. [R] Do they sub by our personnel or by down & distance?
 
 ## Situations

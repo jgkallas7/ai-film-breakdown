@@ -8,13 +8,18 @@ Each reader line has `techs` like ["5 L stand","3 L hand","1 R hand","5 R hand"]
 DOUBLE (no Y) and unknown strength fall back to the RB-away side, else screen L/R.
 Writes <outdir>/board.json + <outdir>/img/cNNN_set.jpg / cNNN_strip.jpg (960 px) for publishing beside the page.
 """
-import argparse, glob, json, re
+import argparse, glob, json, re, sys
 from collections import defaultdict
 from pathlib import Path
 import pandas as pd
 from PIL import Image
 
-ORDER = {"0": 0, "1": 1, "2i": 2, "2": 3, "3": 4, "4i": 5, "4": 6, "5": 7, "7/9": 8, "7": 8, "9": 9, "wide": 10}
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gold"))
+import gold_lib  # noqa: E402
+
+# One technique ladder for every tool (gold_lib.ORDER). The old copy here had no "6", so a 6 technique sorted inside the 4.
+ORDER = {**gold_lib.ORDER, "7/9": gold_lib.ORDER["7"], "wide": gold_lib.ORDER["9"] + 1}
+MID = gold_lib.ORDER["4i"]   # where an unknown technique sorts (the old default)
 
 
 def parse(t):
@@ -40,9 +45,9 @@ def key_of(techs, form):
         rel = "" if tech == "0" else ("S" if side == s else "W") if s else side
         out.append((rel, tech, stance))
     # weak side first, outside-in; then 0; then strong side inside-out
-    w = sorted([x for x in out if x[0] in ("W", "L")], key=lambda x: -ORDER.get(x[1], 5))
+    w = sorted([x for x in out if x[0] in ("W", "L")], key=lambda x: -ORDER.get(x[1], MID))
     z = [x for x in out if x[0] == ""]
-    st = sorted([x for x in out if x[0] in ("S", "R")], key=lambda x: ORDER.get(x[1], 5))
+    st = sorted([x for x in out if x[0] in ("S", "R")], key=lambda x: ORDER.get(x[1], MID))
     seq = w + z + st
     return " · ".join(f"{r}{t}{'' if st_ == 'hand' else '(up)'}" for r, t, st_ in seq), seq, bool(s)
 

@@ -4,7 +4,7 @@
 
 Crop box is in source pixels (1920x1080). Prints the jpg paths to Read.
 """
-import argparse, subprocess
+import argparse, os, subprocess
 from pathlib import Path
 import imageio_ffmpeg
 from PIL import Image
@@ -17,14 +17,18 @@ a = ap.parse_args()
 mp4 = Path(a.work) / a.angle / f"Clip {a.clip:03d}.mp4"
 outdir = Path(a.work) / "grabs"; outdir.mkdir(exist_ok=True)
 for t in a.t:
-    tag = ('_' + a.crop.replace(',', '-')) if a.crop else ''
+    # Readers A and B share this folder. The crop box AND the zoom are in the name, and the frame is written to a
+    # private temp file first, so neither reader ever opens the other's crop or a half-written image.
+    tag = (('_' + a.crop.replace(',', '-')) if a.crop else '') + (f"_z{a.zoom:g}" if a.zoom != 1 else '')
     out = outdir / f"c{a.clip:03d}_{a.angle[:2]}_{t:05.2f}{tag}.jpg"
-    subprocess.run([FF, "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", str(mp4), "-frames:v", "1", "-q:v", "2", str(out)], check=True)
+    tmp = outdir / f".tmp_{os.getpid()}_{out.name}"
+    subprocess.run([FF, "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", str(mp4), "-frames:v", "1", "-q:v", "2", str(tmp)], check=True)
     if a.crop or a.zoom != 1:
-        im = Image.open(out)
+        im = Image.open(tmp)
         if a.crop:
             im = im.crop(tuple(int(float(v)) for v in a.crop.split(",")))
         if a.zoom != 1:
             im = im.resize((int(im.width * a.zoom), int(im.height * a.zoom)), Image.LANCZOS)
-        im.save(out, quality=92)
+        im.save(tmp, format="JPEG", quality=92)
+    os.replace(tmp, out)
     print(out)

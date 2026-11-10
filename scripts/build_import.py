@@ -44,6 +44,9 @@ import glob, io, json, re, sys, zipfile
 from pathlib import Path
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gold"))
+import gold_lib  # noqa: E402  (line parsing + the one front-family rule)
+
 
 def load(cfg, base, n):
     reads = {}
@@ -125,6 +128,14 @@ def front_label(df):
     on the same defense looked like two different fronts)."""
     techs = [t for t in (df.get("techs") or []) if t and t != "partial"]
     if techs and "partial" not in (df.get("techs") or []):
+        # One family rule for the import, the gold test and the reports: gold/gold_lib.line_family (COUNT rule, plus
+        # BEAR = center and both guards covered, TITE = 4i/4 on both tackles over a 0 or 1). Checked against Coach's
+        # 104 OPJ calls 11/09: 103 match; the miss is a 4-man line with a 0 that he called ODD (walked-up backer).
+        P = [gold_lib.parse(t) for t in techs]
+        if all(P):
+            fam, _ = gold_lib.line_family(P)
+            if fam in ("BEAR", "TITE"):
+                return fam
         # COUNT decides (Coach 10/6): players ON the line at DL depth, hands down or standup ends playing DL.
         # 3 or 5 on the LOS = ODD even with a shaded nose; 4 = EVEN. The nose only describes spacing:
         # 4 on the line with a head-up 0 = EVEN (ODD SPACING). An OLB at LB depth / walked-out overhang is
@@ -144,6 +155,28 @@ def front_label(df):
     if on_line >= 5:
         return "5+ ON LINE"
     return "EVEN" if on_line >= 4 or "4-man" in fam or "4-3" in fam else "ODD"
+
+
+def front_check(df):
+    """Why Coach should look at this front, or None. Two cases the line alone can't settle:
+    - 4 on the line with a head-up 0: EVEN by the count, but a 0 with a walked-up backer is ODD (OPA 100, Coach 10/10;
+      the one OPJ gold snap the family rule misses is this case).
+    - the reader's own front word is on the other side of EVEN / ODD from what his line counts to (he saw something
+      his technique list doesn't say, or miscounted)."""
+    techs = df.get("techs") or []
+    if not techs or "partial" in techs:
+        return None
+    P = [gold_lib.parse(t) for t in techs]
+    if not all(P):
+        return None
+    fam, check = gold_lib.line_family(P)
+    if check and fam:
+        return "front: 4 on the line with a 0 nose -- EVEN by the count, ODD if one of the four is a walked-up backer"
+    said = gold_lib.family(df.get("front") or df.get("front_family"), None)
+    two = lambda x: "EVEN" if x == "EVEN" else "ODD"          # TITE and BEAR sit in ODD (definitions page)
+    if said and fam and two(said) != two(fam):
+        return f"front: reader wrote {said}, his line ({len(P)} on it) counts {fam} -- which is it?"
+    return None
 
 
 def quarters(cfg, R, n):
@@ -205,7 +238,10 @@ def build(cfg, R, n):
                     if fr:
                         row["DEF FRONT"] = fr
                     # COVERAGE is never filled from frames: the sideline angle can't tell 1-high from
-                    # 2 safeties at the same depth (Coach, 10/6: "said 1 high when it had two safeties")
+                    # 2 safeties at the same depth (Coach, 10/6: "said 1 high when it had two safeties").
+                    # A reader's `coverage` field is never read here. Calls two readers agree on go to the
+                    # film room as suggestions Coach taps to confirm (scripts/agreed_calls.py, Coach 11/09);
+                    # COVERAGE reaches this file only through his Hudl export.
                     if df.get("pressure") and df["pressure"] not in ("unclear",):
                         row["BLITZ"] = "NONE" if df["pressure"] == "none" else df["pressure"].upper()
                 if r.get("hc_form"):                               # formation pass: our names, never shapes
@@ -342,6 +378,9 @@ def build(cfg, R, n):
                            f"result '{r.get('result')}' -- {(r.get('note') or '')[:90]}"))
         if r.get("snap") and r.get("kind") in ("pat_kick", "fg") and r.get("result") not in ("Good", "No Good", "Blocked"):
             checks.append((c, Q[c], "-", "kick result not visible"))
+        why = front_check(r.get("def") or {}) if rows[c].get("DEF FRONT") else None
+        if why:
+            checks.append((c, Q[c], f"{rows[c].get('DN')}&{rows[c].get('DIST')}", why))
         if r.get("conf") == "L" and r.get("snap"):
             checks.append((c, Q[c], f"{rows[c].get('DN')}&{rows[c].get('DIST')}",
                            f"low-confidence read: {(r.get('note') or 'front/formation read is a guess')[:90]}"))

@@ -73,6 +73,42 @@ What the numbers taught me: worked examples and prompt rules fix *category* erro
 linebacker as a lineman, missing a hidden nose tackle). The fine splits that remain (a 3-technique vs a 4i)
 need measurement from the image, not more prompt text.
 
+### November: testing the rules I already had
+
+By November the briefs had picked up rules from later opponents that had never been scored. I froze one sample
+(24 snaps, two blind readers, 48 reads per run) and re-ran it with one thing changed at a time. 48 reads means
+about 3 reads of noise, so the honest answer to most changes is "no gain", and then the rule comes out.
+
+| Run | Change | Front family (of 48) | Fair line | Core line | Right when both agree (fair line) |
+|---|---|---|---|---|---|
+| 5 | Run-3 brief and rule files | 42 | 22 | 26 | 70% |
+| 6 | Run 5 on a different model (Opus 5.5) | 37 | 27 | 29 | 65% |
+| 7 | Lean brief: definitions and method only | 30 | 16 | 18 | 44% |
+| 9 | Run 5 at medium reasoning effort | 31 | 13 | 17 | 38% |
+| 10 | Current rule files with six later rules kept | 42 | 21 | 26 | 57% |
+| 11 | Run 10 without those six rules | 41 | 24 | 28 | 60% |
+
+"Fair line" counts the exact line, except that an end with no tight end on his side may be a 5 or a 9: the gaps are
+not uniform, so that spot is a judgment call.
+
+- **The six later rules came out.** Run 11 was equal or better on every line number. The difference is inside the
+  noise, so the finding is "they did not help", not "they hurt". The cut text is kept in `eval/README.md` so any one
+  of them can be re-tested.
+- **An older rule came out too.** "Write the tighter technique when unsure" cost six reads.
+- **Model and effort.** The two current models split the numbers (one better on family, the other on the line), so
+  the model is not the bottleneck. Lowering the reasoning effort was a clear loss.
+- **The lean brief was much worse on fronts** but read the shell, the blitz and the coverage as well as the
+  full brief. The worked examples and rules earn their place on the line, not on those calls.
+- Still no run is near the 95% auto-accept bar on the exact line. On the front *family*, agreed reads were right
+  20 of 21 (runs 5 and 10) and 20 of 22 (run 11).
+
+### Coverage: pre-filled, not auto-accepted
+
+When both blind readers agreed on a coverage, they matched my call 24 of 26 times in October and 11 of 12 on the
+newer model. `scripts/agreed_calls.py` now pre-fills an agreed call in the film room for me to confirm. A
+Cover 4 from a two-high shell or a Cover 0 with nobody deep is a one-tap suggestion; any other agreed call is shown
+as a question with no button. Nothing is saved or printed until I tap.
+
 ## Lessons from the calibration log
 
 Every miss I caught became a dated rule tied to the clip that taught it (`skill/SKILL.md`, "Calibration
@@ -92,8 +128,8 @@ log"). A few that generalize beyond football:
 
 ## Known limits
 
-- Coverage is never written from frames. The readers can't reliably tell the two safeties' depths apart, so I tag
-  coverage.
+- Coverage is never written from frames without my confirmation. Single readers can't reliably tell the two
+  safeties' depths apart; agreed calls are pre-filled for me to confirm (see above).
 - Ball spots are about ±3 yards, worse on the far hash.
 - Telling whether the tight end is on or off the line from a sideline angle is hard, so those calls are marked
   low-confidence for review.
@@ -112,8 +148,9 @@ knowing what a correct read looks like, deciding what to measure, and not trusti
 | `skill/SKILL.md` | The full runbook, including the dated calibration log |
 | `skill/*_brief.md` | Instructions given to the reader, formation and front agents |
 | `skill/scout_questions.md` | My standing scouting questions; every report section has to answer one |
-| `scripts/` | Frame extraction, snap strips, import builder, tag comparison, naming board |
-| `eval/` | The gold-set test: sample picker, scorer, score history, the brief under test |
+| `skill/recognition_card.md` | Recognition card the readers use: technique numbers and the count rule for naming fronts |
+| `scripts/` | Frame extraction, snap strips, import builder, tag comparison, naming board, agreed-coverage pre-fill |
+| `eval/` | The gold-set test: sample picker, scorer, score history, the brief under test; `score_opa.py` scores readers against my blind chart of one game |
 | `templates/front_board.html` | Page I use to name groups of similar fronts |
 
 These are the working scripts from my coaching workspace, lightly edited for publication, not a packaged library.

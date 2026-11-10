@@ -3,8 +3,9 @@
     python3 compare_tags.py <our_import.xlsx> <coach_export.xlsx> [--clips 1-116] [--out misses.csv]
 
 Only rows where Coach filled a cell count. OFF FORM is scored three ways: family (first word,
-DOUBLE DICE kept together), side (LT/RT), and tags (STRONG/PISTOL/BULL/...). Every miss is listed so
-it can become a rule in formation_brief.md / reader_brief.md.
+DOUBLE DICE kept together), side (LT/RT), and tags (STRONG/PISTOL/BULL/...). DEF FRONT is scored
+twice: family (EVEN / ODD, each front name filed the way the definitions page files it) and the
+exact label. Every miss is listed so it can become a rule in formation_brief.md / reader_brief.md.
 """
 import argparse, re
 import pandas as pd
@@ -27,6 +28,21 @@ def side(f):
 
 def tags(f):
     return {t for t in TAGS if t in str(f).upper()}
+
+
+# Front family = EVEN or ODD, the way 00_standards/defensive_front_definitions.md ("Report labels") files each name.
+# Scored next to the exact label so "we wrote ODD, Coach wrote TITE" shows as a naming gap, not a wrong count.
+EVEN_NAMES = ("EVEN", "OVER", "UNDER", "SPLIT")
+ODD_NAMES = ("ODD", "TITE", "OKIE", "PENNY", "STACK", "BEAR", "GOAL")
+
+
+def front_family(f):
+    f = str(f).upper().strip()
+    if f.startswith(EVEN_NAMES):
+        return "EVEN"
+    if f.startswith(ODD_NAMES):
+        return "ODD"
+    return f                                 # a name this table doesn't know only matches itself
 
 
 ap = argparse.ArgumentParser()
@@ -56,6 +72,9 @@ for col in ("ODK", "PLAY TYPE", "RESULT", "OFF FORM", "DEF FRONT", "COVERAGE", "
             if str(o.at[r, col]).upper() != str(c.at[r, col]).upper():
                 misses.append((r, col, o.at[r, col], c.at[r, col]))
         continue
+    if col == "DEF FRONT":
+        okf = [front_family(o.at[r, col]) == front_family(c.at[r, col]) if pd.notna(o.at[r, col]) else False for r in rows]
+        print(f"{'front family':<14}{len(rows):>11}{sum(okf):>8}  ({100 * sum(okf) / len(rows):.0f}%)")
     ok = [str(o.at[r, col]).upper() == str(c.at[r, col]).upper() for r in rows]
     print(f"{col:<14}{len(rows):>11}{sum(ok):>8}  ({100 * sum(ok) / len(rows):.0f}%)")
     misses += [(r, col, o.at[r, col], c.at[r, col]) for r, k in zip(rows, ok) if not k]

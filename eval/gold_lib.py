@@ -73,8 +73,70 @@ def nose(P):
     return inside[0][0] if inside else None
 
 
-def summary(line, front):
+END = ('5', '7', '6', '9')
+
+
+def y_sides(form):
+    """Sides (offense's 'L' / 'R') where a Y gives the end man something to line up on. LT / RT in our formation names
+    is the Y side (Coach 10/18). No Y near the tackle: DOUBLE and TRIPS (spread), EMPTY / QUAD, an unnamed set, and a
+    BULL / BEAR Y (he sits in a guard-tackle gap). TWINS names the receivers, so the Y is opposite. DOUBLE DICE has two."""
+    f = str(form or '').upper()
+    side = 'L' if re.search(r'\bLT\b', f) else 'R' if re.search(r'\bRT\b', f) else None
+    if 'DOUBLE DICE' in f or 'DOUBLE TIGHT' in f:
+        return {'L', 'R'}
+    if re.search(r'\b(BULL|BEAR)\b', f) or re.match(r'\s*(DOUBLE|TRIPS|EMPTY|QUAD|2X2)\b', f) or side is None:
+        return set()
+    if f.lstrip().startswith('TWINS'):
+        return {'R' if side == 'L' else 'L'}
+    return {side}
+
+
+def fair_seq(line, family=None, form=None):
+    """The exact line, except that the end man on a side with NO Y reads 'E' whether he was written 5, 7, 6 or 9.
+    Coach 11/09: with no tight end the 5-or-9 call on a wide end is gray (the gaps are not uniform; "a wide 5 with no
+    tight end is a 9"), so two people who see the same man can write either. On a Y side the number still has to match
+    (5 / 7 / 6 / 9 by width). Everyone inside the ends has to match exactly, and so does the count."""
+    _, P = canon(line, family)
+    ys = y_sides(form)
+    pts = sorted((ORDER[t] * (0 if sd == 'M' else (-1 if sd == 'L' else 1)), t, sd) for t, sd, _ in P)
+    out = [t for _, t, _ in pts]
+    if pts and pts[0][2] == 'L' and 'L' not in ys and out[0] in END:
+        out[0] = 'E'
+    if len(pts) > 1 and pts[-1][2] == 'R' and 'R' not in ys and out[-1] in END:
+        out[-1] = 'E'
+    return '-'.join(out)
+
+
+def summary(line, front, form=None):
     fam0 = family(front, None)
     seq, P = canon(line, fam0)
     fam = family(front, seq)
-    return {'family': fam, 'seq': seq, 'core': core(seq), 'n_line': len(P), 'three': three(P), 'nose': nose(P)}
+    return {'family': fam, 'seq': seq, 'core': core(seq), 'n_line': len(P), 'three': three(P), 'nose': nose(P),
+            'line_family': line_family(P)[0], 'fair': fair_seq(line, fam0, form)}
+
+
+GUARD = ('2i', '2', '3')
+
+
+def line_family(P):
+    """Front family from the line alone: Coach's COUNT rule plus the two names the alignment decides.
+    P = parsed line [(tech, side, stance), ...]. Returns (family, check): check is True when the line can't settle it
+    and Coach has to look (4 on the line with a 0 nose is EVEN by count, but a 0 with a walked-up backer is ODD:
+    OPA 100, Coach 10/10).
+
+    - BEAR = the center and both guards covered (0 or a 1, plus a 2i / 2 / 3 on each guard), whatever the count.
+    - TITE = 3 on the line, a 0 or shaded 1, and a 4i or 4 on both tackles (the ENDS define it, Coach 10/16).
+    - else the count: 4 or 6 = EVEN, 3 or 5 = ODD.
+    Readers name techniques; this names the family, so the same line always gets the same family."""
+    t = [p[0] for p in P]
+    n = len(t)
+    center = any(x in ('0', '1') for x in t)
+    if center and all(any(x in GUARD and sd == s for x, sd, _ in P) for s in ('L', 'R')):
+        return 'BEAR', False
+    if n == 3 and center and sum(x in ('4i', '4') for x in t) == 2:
+        return 'TITE', False
+    if n in (4, 6):
+        return 'EVEN', '0' in t
+    if n in (3, 5):
+        return 'ODD', False
+    return None, True

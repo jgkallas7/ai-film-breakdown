@@ -58,7 +58,6 @@ while len(pick) < min(a.n, len(G)):
 S = pd.DataFrame(pick).sort_values(['game_id', 'clip']).reset_index(drop=True)
 if a.snaps_from:
     keep = {(x['game_id'], int(x['clip'])) for x in json.load(open(a.snaps_from))['snaps']}
-    bad = keep & {(c, k) for c, k in named} if False else set()
     S = G[[(g, int(c)) in keep for g, c in zip(G.game_id, G['clip'])]].sort_values(['game_id', 'clip']).reset_index(drop=True)
     if len(S) != len(keep):
         raise SystemExit(f'{len(keep) - len(S)} reused snaps are now quoted in the rules (would leak); pick other examples')
@@ -130,7 +129,10 @@ for gid, gg in S.groupby('game_id'):
             (run / 'prompts' / f'{name}.md').write_text(p)
             jobs.append({'name': name, 'game_id': gid, 'reader': 'ABCDEFG'[rd], 'clips': [int(r['clip']) for r in ch],
                          'prompt': str(run / 'prompts' / f'{name}.md'), 'out': str(run / 'reads' / f'{name}.jsonl')})
-json.dump({'seed': a.seed, 'brief_sha': __import__('hashlib').sha1(brief.encode()).hexdigest()[:10], 'jobs': jobs,
+sha = lambda b: __import__('hashlib').sha1(b).hexdigest()[:10]
+# rules_sha covers the shared rule files the brief tells readers to open: a rule edit there changes the score too
+json.dump({'seed': a.seed, 'brief_sha': sha(brief.encode()), 'rules_sha': sha(b''.join(f.read_bytes() for f in RULES if f != HERE / 'front_test_brief.md')),
+           'jobs': jobs,
            'snaps': S[['game_id', 'clip', 'gold_group']].to_dict('records')}, open(run / 'manifest.json', 'w'), indent=1)
 print(len(S), 'snaps |', S.gold_group.value_counts().to_dict())
 print(len(jobs), 'reader jobs ->', run / 'prompts')

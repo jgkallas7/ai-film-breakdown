@@ -1,8 +1,15 @@
-date,label,run,seed,brief,reads,family,exact_line,core,three_side,nose,agree,acc_when_agree
-2026-10-21,"baseline: line-count brief, end zone + wide, 2x crop",gold_run1,1,5dcf5d3e7d,48,0.75,0.458,0.583,0.729,0.75,0.417,0.7
-2026-10-21,run2: + 6 worked-example frames,gold_run2,1,134329ed24,48,0.833,0.479,0.604,0.729,0.792,0.583,0.571
-2026-10-21,run3: + #45 rule + 3 frames,gold_run3,1,7bc09b32d4,48,0.875,0.521,0.625,0.75,0.771,0.792,0.579
-2026-10-22,rescore run1 (gold: OPK 102 recheck),gold_run1,1,5dcf5d3e7d,48,0.75,0.458,0.583,0.729,0.75,0.417,0.7
-2026-10-22,rescore run2 (gold: OPK 102 recheck),gold_run2,1,134329ed24,48,0.833,0.479,0.604,0.729,0.792,0.583,0.571
-2026-10-22,rescore run3 (gold: OPK 102 recheck),gold_run3,1,7bc09b32d4,48,0.875,0.521,0.625,0.75,0.771,0.792,0.579
-2026-10-22,run4: + Y-in-BEAR overhang + tighter-tech rule,gold_run4,1,56228dff0e,48,0.854,0.479,0.604,0.708,0.792,0.542,0.692
+date,label,run,seed,brief,reads,family,exact_line,core,three_side,nose,agree,acc_when_agree,family_from_line,fam_agree,fam_acc_when_agree,model,rules,line_fair,fair_agree,fair_acc_when_agree
+2026-10-21,"baseline: line-count brief, end zone + wide, 2x crop",gold_run1,1,5dcf5d3e7d,48,0.75,0.458,0.583,0.729,0.75,0.417,0.7,,,,,,,,
+2026-10-21,run2: + 6 worked-example frames,gold_run2,1,134329ed24,48,0.833,0.479,0.604,0.729,0.792,0.583,0.571,,,,,,,,
+2026-10-21,run3: + #45 rule + 3 frames,gold_run3,1,7bc09b32d4,48,0.875,0.521,0.625,0.75,0.771,0.792,0.579,,,,,,,,
+2026-10-22,rescore run1 (gold: OPK 102 recheck),gold_run1,1,5dcf5d3e7d,48,0.75,0.458,0.583,0.729,0.75,0.417,0.7,,,,,,,,
+2026-10-22,rescore run2 (gold: OPK 102 recheck),gold_run2,1,134329ed24,48,0.833,0.479,0.604,0.729,0.792,0.583,0.571,,,,,,,,
+2026-10-22,rescore run3 (gold: OPK 102 recheck),gold_run3,1,7bc09b32d4,48,0.875,0.521,0.625,0.75,0.771,0.792,0.579,,,,,,,,
+2026-10-22,run4: + Y-in-BEAR overhang + tighter-tech rule,gold_run4,1,56228dff0e,48,0.854,0.479,0.604,0.708,0.792,0.542,0.692,,,,,,,,
+2026-11-09,"run5: fable 5.2, run-3 brief + run-3 rule files, frozen sample",gold_run5,1,059416fe35,48,0.875,0.417,0.542,0.729,0.771,0.375,0.667,0.875,0.875,0.952,fable-5-2,run-3 rule files (commit 2d4abe5),0.458,0.417,0.7
+2026-11-09,"run6: opus 5.5 control, same snaps and prompts as run 5",gold_run6_opus,1,059416fe35,48,0.771,0.521,0.604,0.729,0.875,0.667,0.625,0.771,0.958,0.783,opus-5-5,run-3 rule files (commit 2d4abe5),0.562,0.708,0.65
+2026-11-09,"run7: lean brief (definitions + method, no examples, no rule files)",gold_run7,1,059416fe35,48,0.625,0.25,0.375,0.667,0.583,0.292,0.286,0.667,0.75,0.722,fable-5-2,none (definitions inline),0.333,0.375,0.44
+2026-11-09,run8: run-3 brief + todays rule files read in full,gold_run8,1,059416fe35,48,0.833,0.125,0.417,0.688,0.708,0.5,0.0,0.833,0.917,0.864,fable-5-2,"todays rule files (working tree 11/09), read in full",0.312,0.583,0.36
+2026-11-09,run9: run-5 setup at medium effort,gold_run9,1,059416fe35,48,0.646,0.229,0.354,0.667,0.479,0.25,0.333,0.646,0.708,0.765,fable-5-2,run-3 rule files (commit 2d4abe5),0.271,0.333,0.38
+2026-11-09,"run10: live rule files 11/09 (end reworded, tighter rule out, OPQ lines kept)",gold_run10,1,059416fe35,48,0.875,0.312,0.542,0.729,0.75,0.333,0.375,0.875,0.875,0.952,fable-5-2,"live 11/09, OPQ lines kept",0.438,0.583,0.571
+2026-11-09,run11: run10 minus the six OPQ-derived front_brief lines,gold_run11,1,059416fe35,48,0.854,0.417,0.583,0.771,0.812,0.583,0.5,0.854,0.917,0.909,fable-5-2,live 11/09 minus front_brief OPQ lines,0.5,0.625,0.6

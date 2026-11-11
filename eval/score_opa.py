@@ -23,8 +23,15 @@ def tech(s):
     return m.group(1) if m else None
 
 
+COACH_LINE = re.compile(r"^(?:wide\s+)?((?:[sw]?\d+i?)(?:-[sw]?\d+i?)+)(?:\s|$)")
+
+
 def coach_line(s):
-    return [t.lower() for t in str(s).split("-")] if s else []
+    """Coach's line cell -> techniques left to right. The chart keeps what he typed; the cleaning happens here.
+    A note after the line is dropped ("5-3-1-5 L-R"), and so is a leading "Wide" or a standing / wide mark on a man
+    ("S7", "w5"). A cell that is not a full line ("Even", "6 man bear", a man he could not place) grades nothing."""
+    m = COACH_LINE.match(str(s or "").strip().lower())
+    return [t.lstrip("sw") for t in m.group(1).split("-")] if m else []
 
 
 FLIPPED = []
@@ -90,15 +97,19 @@ def three_side(line):
 
 
 def main():
-    chart = json.load(open(sys.argv[1]))["docs"]
+    chart = json.load(open(sys.argv[1], encoding="utf-8"))["docs"]
     rd = sys.argv[2]
     prefix = "opa_"
+    if "--game" in sys.argv:  # a merged chart holds every game: keep one (docs carry "g") and default the prefix to it
+        game = sys.argv[sys.argv.index("--game") + 1]
+        chart = {k: d for k, d in chart.items() if d.get("g") == game}
+        prefix = game + "_"
     if "--prefix" in sys.argv:
         prefix = sys.argv[sys.argv.index("--prefix") + 1]
     reads = collections.defaultdict(dict)  # clip -> reader -> row
     for f in sorted(glob.glob(os.path.join(rd, prefix + "*.jsonl"))):
         name = os.path.basename(f)[len(prefix):-6]
-        if not re.fullmatch(r"[abc][12]", name):
+        if not re.fullmatch(r"[a-z][12]", name):
             continue
         for l in open(f, encoding="utf-8"):
             l = l.strip()

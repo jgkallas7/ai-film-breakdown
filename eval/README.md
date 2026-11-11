@@ -59,6 +59,42 @@ small sample, so a 3-read swing is noise. The reader files and prompts are in th
 `scout/reads/opa/` (point `<reads_dir>` there for the first row), the Fable 5.2 pair in `scout/reads/opa_f52_v261109/`.
 A new reader must not open any `scout/reads/opa*` folder.
 
+## The same readers on wide-angle film (11/10, 60 snaps, six more games)
+
+I had charted 390 snaps of this opponent across 7 games in the film room, but only the 49 above had ever been used to
+grade coverage and line. `score_opa.py <merged chart> <reads_dir> --game <code>` now grades any one game from the
+merged chart. The fresh run: 10 charted snaps per game from the other six games (seeded, snaps quoted in the rule
+files left out), two blind readers each, current rule files, Fable 5.2 xhigh. Readers were told to write technique
+numbers even from the wide so the line could be graded.
+
+Cameras: game 1 = end zone + wide, game 2 = tight + wide, games 3-6 = wide only.
+
+| | G1 | G2 | G3 | G4 | G5 | G6 | All six | First game (11/09 pair) |
+|---|---|---|---|---|---|---|---|---|
+| Coverage, both agree on a call | 0/1 | 2/2 | 2/4 | 5/7 | 6/7 | 2/2 | 17/23 | 11/12 |
+| Coverage, per clear call | 5/10 | 5/7 | 5/13 | 13/20 | 14/18 | 8/14 | 50/82 | |
+| Coverage, per read | 5/20 | 5/20 | 5/20 | 13/20 | 14/20 | 8/20 | 50/120 | 23/34 |
+| Shell, both agree | 5/6 | 7/7 | 7/7 | 4/8 | 7/7 | 5/9 | 35/44 | |
+| Shell, per read | 14/20 | 17/20 | 17/20 | 10/20 | 17/20 | 11/20 | 86/120 | 30/34 |
+| Blitz yes / no, per read | 20/20 | 20/20 | 16/20 | 14/14 | 14/20 | 18/20 | 102/114 | 29/34 |
+| My blitzes caught | - | - | 0/2 | - | 0/3 | 0/1 | 0/6 | 4/6 |
+| Exact line, per read | 0/2 | 0/20 | 0/20 | 0/20 | 0/20 | 0/18 | 0/100 | 14/34 |
+| DT technique per man | 0/4 | 7/40 | 4/28 | 5/36 | 5/40 | 10/36 | 31/184 | 52/68 |
+
+What it says:
+- Without a high end-zone angle the readers cannot give technique numbers: 0 exact lines in 100 reads, and the two
+  readers matched each other on 1 of 50 snaps. Reversing my line does not help, so it is not a left / right mix-up.
+  The rule "never write a technique number from the wide" stays.
+- Coverage when both readers agree drops from 11/12 to 17/23, and they agreed on a call on only 23 of 60 snaps. On
+  wide film the pre-fill covers fewer snaps and is less safe, so it stays a suggestion.
+- No reader caught any of my 6 blitzes from the wide.
+- 10 snaps a game is a small sample: a 2-read swing in one game is noise. Game 1 is the only one with an end-zone
+  angle and I had charted the line on only 2 of its sampled snaps, so this run does not test line reads from a good
+  camera.
+- My line cells with typed notes in them ("5-3-1-5 L-R", "Wide 5-1-3-5", "S7-1-1-S7") are cleaned by the scorer
+  (`coach_line`), not in the chart. A cell that is not a full line ("Even", "6 man bear") grades nothing. 10 of 226
+  cells needed it.
+
 ## Reading the score
 - **exact line** = every technique right, offense left to right. **family** = EVEN / ODD / TITE / BEAR, scored two ways:
   the reader's own front word, and `family_from_line` = the family code names from his line (`gold_lib.line_family`, the

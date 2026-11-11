@@ -109,6 +109,22 @@ newer model. `scripts/agreed_calls.py` now pre-fills an agreed call in the film 
 Cover 4 from a two-high shell or a Cover 0 with nobody deep is a one-tap suggestion; any other agreed call is shown
 as a question with no button. Nothing is saved or printed until I tap.
 
+### The same readers on wide-angle film
+
+The coverage and line numbers above came from one game with a high end-zone camera. On 11/10 I ran the same readers
+on 60 more snaps I had already charted, from six other games of the same opponent. Four of those games are
+wide-angle only.
+
+| | Six games, mostly wide angle | The end-zone game |
+|---|---|---|
+| Coverage right when both readers agree | 17 of 23 | 11 of 12 |
+| Snaps where both readers agreed on a coverage | 23 of 60 | 12 of 17 |
+| Exact defensive line, per read | 0 of 100 | 14 of 34 |
+| My blitzes caught | 0 of 6 | 4 of 6 |
+
+The camera decides what the readers can do. From the wide they cannot read technique numbers at all, they miss
+blitzes, and an agreed coverage is right about three times in four. The full table is in `eval/README.md`.
+
 ## Lessons from the calibration log
 
 Every miss I caught became a dated rule tied to the clip that taught it (`skill/SKILL.md`, "Calibration
@@ -130,6 +146,8 @@ log"). A few that generalize beyond football:
 
 - Coverage is never written from frames without my confirmation. Single readers can't reliably tell the two
   safeties' depths apart; agreed calls are pre-filled for me to confirm (see above).
+- The line and blitz reads need a high end-zone camera. From a wide-only angle, exact lines were 0 of 100 and
+  blitzes caught 0 of 6 (11/10 test).
 - Ball spots are about ±3 yards, worse on the far hash.
 - Telling whether the tight end is on or off the line from a sideline angle is hard, so those calls are marked
   low-confidence for review.
